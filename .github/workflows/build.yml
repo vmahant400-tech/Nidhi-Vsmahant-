@@ -29,22 +29,14 @@ jobs:
           echo "// Auto-generated dummy cordova variables" > capacitor-cordova-android-plugins/cordova.variables.gradle
         fi
 
-    - name: Fix Subprojects Library Variants for AGP 8
+    - name: Inject Strict Subproject Variants
       run: |
         if [ -f build.gradle ]; then
-          echo "" >> build.gradle
-          echo "subprojects {" >> build.gradle
-          echo "    afterEvaluate { project ->" >> build.gradle
-          echo "        if (project.hasProperty('android')) {" >> build.gradle
-          echo "            project.android {" >> build.gradle
-          echo "                if (namespace == null) {" >> build.gradle
-          echo "                    namespace project.group" >> build.gradle
-          echo "                }" >> build.gradle
-          echo "            }" >> build.gradle
-          echo "            project.plugins.apply('com.android.library')" >> build.gradle
-          echo "        }" >> build.gradle
-          echo "    }" >> build.gradle
-          echo "}" >> build.gradle
+          echo "android {" > subproject_fix.gradle
+          echo "    buildToolsVersion '34.0.0'" >> subproject_fix.gradle
+          echo "}" >> subproject_fix.gradle
+          sed -i '/dependencies {/e cat subproject_fix.gradle' build.gradle
+          rm subproject_fix.gradle
         fi
 
     - name: Clean and Build Debug APK
