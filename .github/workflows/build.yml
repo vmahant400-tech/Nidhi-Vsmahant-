@@ -29,6 +29,23 @@ jobs:
           echo "// Auto-generated dummy cordova variables" > capacitor-cordova-android-plugins/cordova.variables.gradle
         fi
 
+    - name: Fix Subprojects Namespace & Variants for AGP 8+
+      run: |
+        if [ -f build.gradle ]; then
+          echo "" >> build.gradle
+          echo "subprojects {" >> build.gradle
+          echo "    afterEvaluate { project ->" >> build.gradle
+          echo "        if (project.hasProperty('android')) {" >> build.gradle
+          echo "            project.android {" >> build.gradle
+          echo "                if (namespace == null) {" >> build.gradle
+          echo "                    namespace project.group" >> build.gradle
+          echo "                }" >> build.gradle
+          echo "            }" >> build.gradle
+          echo "        }" >> build.gradle
+          echo "    }" >> build.gradle
+          echo "}" >> build.gradle
+        fi
+
     - name: Clean and Build Debug APK
       run: ./gradlew assembleDebug --no-daemon --no-build-cache --stacktrace
 
