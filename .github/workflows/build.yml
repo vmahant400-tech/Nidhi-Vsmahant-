@@ -14,14 +14,16 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Setup Gradle
+    - name: Setup Gradle (No Cache)
       uses: gradle/actions/setup-gradle@v4
+      with:
+        cache-disabled: true
 
-    - name: Grant Execute Permission for Gradlew
+    - name: Grant Execute Permission
       run: chmod +x gradlew || true
 
-    - name: Build Debug APK
-      run: ./gradlew assembleDebug --no-daemon --stacktrace > build_output.log 2>&1
+    - name: Clean and Build Debug APK
+      run: ./gradlew clean assembleDebug --no-daemon --no-build-cache --stacktrace > build_output.log 2>&1
 
     - name: Upload Build Log on Failure
       if: failure()
