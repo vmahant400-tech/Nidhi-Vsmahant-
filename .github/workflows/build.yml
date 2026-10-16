@@ -22,6 +22,13 @@ jobs:
     - name: Grant Execute Permission
       run: chmod +x gradlew || true
 
+    - name: Fix Missing Cordova Variables
+      run: |
+        mkdir -p capacitor-cordova-android-plugins
+        if [ ! -f capacitor-cordova-android-plugins/cordova.variables.gradle ]; then
+          echo "// Auto-generated dummy cordova variables" > capacitor-cordova-android-plugins/cordova.variables.gradle
+        fi
+
     - name: Clean and Build Debug APK
       run: ./gradlew assembleDebug --no-daemon --no-build-cache --stacktrace
 
