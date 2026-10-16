@@ -17,11 +17,18 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
 
+    - name: Check Project Files
+      run: ls -la && ls -la app || true
+
     - name: Grant Execute Permission for Gradlew
       run: chmod +x gradlew || true
 
     - name: Build Debug APK
       run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+    - name: Print Gradle Logs on Failure
+      if: failure()
+      run: cat ~/.gradle/daemon/*/daemon-*.out.log || true
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
