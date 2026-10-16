@@ -14,7 +14,7 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Setup Gradle (No Cache)
+    - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
       with:
         cache-disabled: true
@@ -23,14 +23,7 @@ jobs:
       run: chmod +x gradlew || true
 
     - name: Clean and Build Debug APK
-      run: ./gradlew clean assembleDebug --no-daemon --no-build-cache --stacktrace > build_output.log 2>&1
-
-    - name: Upload Build Log on Failure
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: gradle-error-log
-        path: build_output.log
+      run: ./gradlew assembleDebug --no-daemon --no-build-cache --stacktrace
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
